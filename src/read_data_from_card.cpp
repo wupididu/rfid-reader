@@ -5,17 +5,32 @@
 
 #include "utils.h"
 
-void readDataFromCard(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key) {
-    MFRC522::StatusCode status;
-    byte block, len;
+void readData(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key);
 
+void readDataFromCard(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, unsigned int tryCount) {
     sendMessage("Start read data");
 
-    if (!waitNewPresentCard(mfrc522)) {
+    if (!waitNewPresentCard(mfrc522, tryCount)) {
         sendMessage("Hasnt new card");
         return;
     }
-    // get uuid
+   
+    readData(mfrc522, key);
+}
+
+void readDataFromCard(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key) {
+    if (!waitNewPresentCard(mfrc522)) {
+        return;
+    }
+
+    readData(mfrc522, key);
+}
+
+void readData(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key) {
+    MFRC522::StatusCode status;
+    byte block, len;
+
+     // get uuid
 
     char bufferUid[32] = "";
     getUuid(mfrc522->uid.uidByte, mfrc522->uid.size, bufferUid);

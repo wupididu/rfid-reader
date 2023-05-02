@@ -9,6 +9,7 @@
 MFRC522::MIFARE_Key key;
 MFRC522 mfrc522(SS_PIN, RST_PIN);
 String cm;
+bool readMode, isConnected;
 
 void setup() {
   Serial.begin(9600);
@@ -16,9 +17,14 @@ void setup() {
   SPI.begin();
   mfrc522.PCD_Init();
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
+  readMode=false;
 }
 
 void loop() {
+  if(isConnected && readMode) {
+    readDataFromCard(&mfrc522, &key);
+  }
+
   if (Serial.available() > 0) {
     StaticJsonDocument<200> doc;
     DeserializationError err = deserializeJson(doc, Serial);
@@ -28,21 +34,23 @@ void loop() {
     }
 
     cm = doc["cmd"].as<String>();
+    JsonVariantConst data = doc["data"];
 
     if (cm == "hShake") {
-      JsonVariantConst data = doc["data"];
-      handShake(data);
+      isConnected=handShake(data);
     } else if (cm == "rData") {
-      readDataFromCard(&mfrc522, &key);
+      readDataFromCard(&mfrc522, &key, 10);
     } else if (cm == "wData") {  
-      JsonVariantConst data = doc["data"];
-      writeDataToCard(data, &mfrc522, &key);
+      writeDataToCard(data, &mfrc522, &key, 10);
     } else if (cm == "reboot") {
       void (*reboot)(void) = 0;
       reboot();
+    } else if (cm == "cMode") {
+      readMode=data["readMode"].as<bool>();
+      sendMessage(doc);
     }
   }
-  delay(3000);
+  delay(1000);
 }
 
 

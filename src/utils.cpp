@@ -26,10 +26,10 @@ void getUuid(byte array[], unsigned int len, char buffer[]) {
    buffer[len*2] = '\0';
 }
 
-bool waitNewPresentCard(MFRC522 *mfrc522) {
-  int count = 0;
+bool waitNewPresentCard(MFRC522 *mfrc522, unsigned int tryCount) {
+  unsigned int count = 0;
 
-  while(count < 10) {
+  while(count < tryCount) {
     if (mfrc522->PICC_IsNewCardPresent()) {
       if (mfrc522->PICC_ReadCardSerial()) {
         return true;
@@ -39,6 +39,15 @@ bool waitNewPresentCard(MFRC522 *mfrc522) {
     delay(1000);
   }
   
+  return false;
+}
+
+bool waitNewPresentCard(MFRC522 *mfrc522) {
+  if (mfrc522->PICC_IsNewCardPresent()) {
+    if (mfrc522->PICC_ReadCardSerial()) {
+      return true;
+    }
+  }
   return false;
 }
 

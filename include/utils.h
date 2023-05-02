@@ -10,5 +10,6 @@
 void sendMessage(const String &s);
 void sendMessage(JsonVariantConst data);
 void getUuid(byte array[], unsigned int len, char buffer[]);
+bool waitNewPresentCard(MFRC522 *mfrc522, unsigned int tryCount);
 bool waitNewPresentCard(MFRC522 *mfrc522);
 bool auth(byte b, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key);

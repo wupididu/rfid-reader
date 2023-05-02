@@ -5,13 +5,13 @@
 
 #include "utils.h"
 
-void writeDataToCard(JsonVariantConst data, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key) {
+void writeDataToCard(JsonVariantConst data, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, unsigned int tryCount) {
     MFRC522::StatusCode status;
     byte block;
 
     sendMessage("Start write data");
 
-    if (!waitNewPresentCard(mfrc522)) {
+    if (!waitNewPresentCard(mfrc522, tryCount)) {
     sendMessage("Hasnt new card");
     return;
     }
@@ -65,4 +65,8 @@ void writeDataToCard(JsonVariantConst data, MFRC522 *mfrc522, MFRC522::MIFARE_Ke
 
     mfrc522->PICC_HaltA();
     mfrc522->PCD_StopCrypto1();
+}
+
+void writeDataToCard(JsonVariantConst data, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key) {
+    writeDataToCard(data, mfrc522, key, 1);
 }
