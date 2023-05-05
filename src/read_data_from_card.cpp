@@ -9,7 +9,7 @@
 
 void readData(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key);
 bool readDataFromBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, String *value, byte *block, byte *len);
-bool readDataFromBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long *value, byte *block, byte *len);
+bool readDataFromBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long long *value, byte *block, byte *len);
 
 void readDataFromCard(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, unsigned int tryCount) {
     sendMessage("Start read data");
@@ -79,7 +79,7 @@ void readData(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key) {
 
     // get correctUntil
 
-    long correctUntil;
+    long long correctUntil;
     block = 6;
     len = 18;
     if (!readDataFromBlock(mfrc522, key, &correctUntil, &block, &len)) {
@@ -127,7 +127,7 @@ bool readDataFromBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, String *value
     return true;
 }
 
-bool readDataFromBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long *value, byte *block, byte *len) {
+bool readDataFromBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key,long long *value, byte *block, byte *len) {
     if (!auth(*block, mfrc522, key)) {
         return false;
     }
@@ -144,6 +144,6 @@ bool readDataFromBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long *value, 
         return false;
     }
 
-    *value = *((long *)buffer);
+    *value = *((long long *)buffer);
     return true;
 }

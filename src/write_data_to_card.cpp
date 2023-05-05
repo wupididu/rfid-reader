@@ -8,8 +8,8 @@
 #include "utils.h"
 
 bool writeDataToBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, String *value, byte *block, byte len);
-bool writeDataToBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long *value, byte *block, byte len);
-
+bool writeDataToBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long long *value, byte *block, byte len);
+ 
 void writeDataToCard(JsonObject* data, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, unsigned int tryCount) {
     sendMessage("Start write data");
 
@@ -26,7 +26,7 @@ void writeDataToCard(JsonObject* data, MFRC522 *mfrc522, MFRC522::MIFARE_Key *ke
     String name = (*data)["name"].as<String>();
     String lastName = (*data)["lastName"].as<String>();
     String userType = (*data)["userType"].as<String>();
-    long correctUntil = (*data)["correctUntil"].as<long>();
+    long long correctUntil = (*data)["correctUntil"].as<long long>();
 
     // write data
 
@@ -99,7 +99,7 @@ bool writeDataToBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, String *value,
     return true;
 }
 
-bool writeDataToBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long *value, byte *block, byte len) {
+bool writeDataToBlock(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, long long *value, byte *block, byte len) {
     if (!auth(*block, mfrc522, key)) {
         return false;
     }
