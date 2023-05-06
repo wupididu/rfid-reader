@@ -7,8 +7,8 @@
 
 #include "utils.h"
 
-bool readDataFromBlock(String *value, byte *block, byte *len);
-bool readDataFromBlock(long long *value, byte *block, byte *len);
+bool readDataFromBlock(String *value, byte block, byte len);
+bool readDataFromBlock(long long *value, byte block, byte len);
 
 void readDataFromCard(byte tryCount) {
     sendMessage("Start read data");
@@ -31,7 +31,7 @@ void readDataFromCard(byte tryCount) {
     String uuid;
     block = 1;
     len = 18;
-    if (!readDataFromBlock(&uuid, &block, &len)) {
+    if (!readDataFromBlock(&uuid, block, len)) {
         return;
     }
      
@@ -40,7 +40,7 @@ void readDataFromCard(byte tryCount) {
     String name;
     block = 2;
     len = 18;
-    if (!readDataFromBlock(&name, &block, &len)) {
+    if (!readDataFromBlock(&name, block, len)) {
         return;
     }
      
@@ -49,7 +49,7 @@ void readDataFromCard(byte tryCount) {
     String lastName;
     block = 4;
     len = 18;
-    if (!readDataFromBlock(&lastName, &block, &len)) {
+    if (!readDataFromBlock(&lastName, block, len)) {
         return;
     }
 
@@ -58,7 +58,7 @@ void readDataFromCard(byte tryCount) {
     String userType;
     block = 5;
     len = 18;
-    if (!readDataFromBlock(&userType, &block, &len)) {
+    if (!readDataFromBlock(&userType, block, len)) {
         return;
     }
 
@@ -67,7 +67,7 @@ void readDataFromCard(byte tryCount) {
     long long correctUntil;
     block = 6;
     len = 18;
-    if (!readDataFromBlock(&correctUntil, &block, &len)) {
+    if (!readDataFromBlock(&correctUntil, block, len)) {
         return;
     }
 
@@ -90,8 +90,8 @@ void readDataFromCard(byte tryCount) {
     mfrc522.PCD_StopCrypto1();
 }
 
-bool readDataFromBlock(String *value, byte *block, byte *len) {
-    if (!auth(*block)) {
+bool readDataFromBlock(String *value, byte block, byte len) {
+    if (!auth(block)) {
         return false;
     }
 
@@ -99,7 +99,7 @@ bool readDataFromBlock(String *value, byte *block, byte *len) {
 
     byte buffer[18];
 
-    status = mfrc522.MIFARE_Read(*block, buffer, len);
+    status = mfrc522.MIFARE_Read(block, buffer, &len);
     if (status != MFRC522::STATUS_OK) {
         sendMessage(mfrc522.GetStatusCodeName(status));
         return false;
@@ -111,8 +111,8 @@ bool readDataFromBlock(String *value, byte *block, byte *len) {
     return true;
 }
 
-bool readDataFromBlock(long long *value, byte *block, byte *len) {
-    if (!auth(*block)) {
+bool readDataFromBlock(long long *value, byte block, byte len) {
+    if (!auth(block)) {
         return false;
     }
 
@@ -120,7 +120,7 @@ bool readDataFromBlock(long long *value, byte *block, byte *len) {
 
     byte buffer[18];
 
-    status = mfrc522.MIFARE_Read(*block, buffer, len);
+    status = mfrc522.MIFARE_Read(block, buffer, &len);
     if (status != MFRC522::STATUS_OK) {
         sendMessage(mfrc522.GetStatusCodeName(status));
         return false;

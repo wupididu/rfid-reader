@@ -5,8 +5,8 @@
 
 #include "utils.h"
 
-bool handShake(JsonObject* data) {
-  String key = (*data)["key"].as<String>();
+bool handShake(JsonObject data) {
+  String key = data["key"].as<String>();
   if (key == KEY) {
     StaticJsonDocument<200> doc;
     doc["cmd"] = CM_HANDSHAKE;

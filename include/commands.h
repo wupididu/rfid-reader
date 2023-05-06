@@ -3,6 +3,6 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-bool handShake(JsonObject* data);
+bool handShake(JsonObject data);
 void readDataFromCard(byte tryCount);
-void writeDataToCard(JsonObject* data, byte tryCount);
+void writeDataToCard(JsonObject data, byte tryCount);

@@ -37,11 +37,11 @@ void loop() {
     JsonObject data = doc["data"].as<JsonObject>();
 
     if (cm == CM_HANDSHAKE) {
-      isConnected=handShake(&data);
+      isConnected=handShake(data);
     } else if (cm == CM_READ_DATA) {
       readDataFromCard(10);
     } else if (cm == CM_WRITE_DATA) {  
-      writeDataToCard(&data, 10);
+      writeDataToCard(data, 10);
     } else if (cm == CM_REBOOT) {
       void (*reboot)(void) = 0;
       reboot();
