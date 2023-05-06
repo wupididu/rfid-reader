@@ -6,9 +6,6 @@
 #include <MFRC522.h>
 
 #include "utils.h"
-
-bool writeDataToBlock(String value, byte block, byte len);
-bool writeDataToBlock(long long value, byte block, byte len);
  
 void writeDataToCard(JsonObject data, byte tryCount) {
     sendMessage("Start write data");
@@ -19,50 +16,50 @@ void writeDataToCard(JsonObject data, byte tryCount) {
     }
 
     byte block, len;
-
-    // get data
-    data["uuid"];
-    String uuid = data["uuid"].as<String>();
-    String name = data["name"].as<String>();
-    String lastName = data["lastName"].as<String>();
-    String userType = data["userType"].as<String>();
-    long long correctUntil = data["correctUntil"].as<long long>();
+    byte buffer[18];
 
     // write data
 
-    sendMessage("Write data");
-
+    sendMessage("Write uuid");
     block = 1;
     len = 16;
-    if (!writeDataToBlock(uuid, block, len)) {
+    data["uuid"].as<String>().getBytes(buffer, 18);
+
+    if (!writeDataToBlock(block, buffer, len)) {
         return;
     }
 
     sendMessage("Write name");
     block = 2;
     len = 16;
-    if (!writeDataToBlock(name, block, len)) {
+    data["name"].as<String>().getBytes(buffer, 18);
+
+    if (!writeDataToBlock(block, buffer, len)) {
         return;
     }
 
     sendMessage("Write last name");
     block = 4;
     len = 16;
-    if (!writeDataToBlock(lastName, block, len)) {
+    data["lastName"].as<String>().getBytes(buffer, 18);
+
+    if (!writeDataToBlock(block, buffer, len)) {
         return;
     }
 
     sendMessage("Write user type");
     block = 5;
     len = 16;
-    if (!writeDataToBlock(userType, block, len)) {
+    data["userType"].as<String>().getBytes(buffer, 18);
+    if (!writeDataToBlock(block, buffer, len)) {
         return;
     }
 
     sendMessage("Write correct until");
     block = 6;
     len = 16;
-    if (!writeDataToBlock(correctUntil, block, len)) {
+    data["correctUntil"].as<String>().getBytes(buffer, 18);
+    if (!writeDataToBlock(block, buffer, len)) {
         return;
     }
 
@@ -76,45 +73,4 @@ void writeDataToCard(JsonObject data, byte tryCount) {
 
     mfrc522.PICC_HaltA();
     mfrc522.PCD_StopCrypto1();
-}
-
-bool writeDataToBlock(String value, byte block, byte len) {
-    if (!auth(block)) {
-        return false;
-    }
-
-    sendMessage("Write data: Auth success");
-
-    byte buffer[34];
-
-    sendMessage("get bytes");
-    sendMessage(value);
-
-    value.getBytes(buffer, sizeof(buffer));
-
-    sendMessage("mifare write");
-
-    status = mfrc522.MIFARE_Write(block, buffer, len);
-    if (status != MFRC522::STATUS_OK) {
-        sendMessage(mfrc522.GetStatusCodeName(status));
-        return false;
-    }
-
-    return true;
-}
-
-bool writeDataToBlock(long long value, byte block, byte len) {
-    if (!auth(block)) {
-        return false;
-    }
-
-    sendMessage("Write data: Auth success");
-
-    status = mfrc522.MIFARE_Write(block, (unsigned char *)value, len);
-    if (status != MFRC522::STATUS_OK) {
-        sendMessage(mfrc522.GetStatusCodeName(status));
-        return false;
-    }
-
-    return true;
 }

@@ -53,7 +53,42 @@ bool auth(byte b) {
   status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, b, &key, &(mfrc522.uid)); //line 834
   if (status != MFRC522::STATUS_OK) {
     sendMessage(mfrc522.GetStatusCodeName(status));
+    mfrc522.PICC_HaltA();
+    mfrc522.PCD_StopCrypto1();
     return false;
   }
+  sendMessage("Auth success");
+  return true;
+}
+
+bool readDataFromBlock(byte blockAddr, byte *buffer, byte* bufferSize) {
+  if (!auth(blockAddr)) {
+    return false;
+  }
+  
+  status = mfrc522.MIFARE_Read(blockAddr, buffer, bufferSize);
+  if (status != MFRC522::STATUS_OK) {
+    sendMessage(mfrc522.GetStatusCodeName(status));
+    mfrc522.PICC_HaltA();
+    mfrc522.PCD_StopCrypto1();
+    return false;
+  }
+  sendMessage("Read data success");
+  return true;
+}
+
+bool writeDataToBlock(byte blockAddr, byte *buffer, byte bufferSize) {
+  if (!auth(blockAddr)) {
+    return false;
+  }
+  
+  status = mfrc522.MIFARE_Write(blockAddr, buffer, bufferSize);
+  if (status != MFRC522::STATUS_OK) {
+    sendMessage(mfrc522.GetStatusCodeName(status));
+    mfrc522.PICC_HaltA();
+    mfrc522.PCD_StopCrypto1();
+    return false;
+  }
+  sendMessage("Read data success");
   return true;
 }
