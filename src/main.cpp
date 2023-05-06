@@ -8,10 +8,7 @@
 #include "utils.h"
 #include "commands.h"
 
-MFRC522::MIFARE_Key key;
 bool readMode, isConnected;
-MFRC522 mfrc522(SS_PIN, RST_PIN);
-
 
 void setup() {
   Serial.begin(9600);
@@ -26,7 +23,7 @@ void setup() {
 
 void loop() {
   if(isConnected && readMode) {
-    readDataFromCard(&mfrc522, &key);
+    readDataFromCard(5);
   }
   
   if (Serial.available() > 0) {
@@ -42,9 +39,9 @@ void loop() {
     if (cm == CM_HANDSHAKE) {
       isConnected=handShake(&data);
     } else if (cm == CM_READ_DATA) {
-      readDataFromCard(&mfrc522, &key, 10);
+      readDataFromCard(10);
     } else if (cm == CM_WRITE_DATA) {  
-      writeDataToCard(&data, &mfrc522, &key, 10);
+      writeDataToCard(&data, 10);
     } else if (cm == CM_REBOOT) {
       void (*reboot)(void) = 0;
       reboot();

@@ -3,7 +3,6 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>
 
-
 #include "utils.h"
 
 bool handShake(JsonObject* data) {

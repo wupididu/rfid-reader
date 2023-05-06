@@ -4,6 +4,5 @@
 #include <ArduinoJson.h>
 
 bool handShake(JsonObject* data);
-void readDataFromCard(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key);
-void readDataFromCard(MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, unsigned int tryCount);
-void writeDataToCard(JsonObject* data, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key, unsigned int tryCount);
+void readDataFromCard(byte tryCount);
+void writeDataToCard(JsonObject* data, byte tryCount);

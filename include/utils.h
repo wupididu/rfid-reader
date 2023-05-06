@@ -15,9 +15,12 @@
 #define CM_REBOOT "reboot"
 #define CM_CHANGE_MODE "cMode"
 
+extern MFRC522::MIFARE_Key key;
+extern MFRC522 mfrc522;
+extern MFRC522::StatusCode status;
+
 void sendMessage(const String &s);
 void sendMessage(JsonVariantConst data);
-void getUuid(byte array[], unsigned int len, char buffer[]);
-bool waitNewPresentCard(MFRC522 *mfrc522, unsigned int tryCount);
-bool waitNewPresentCard(MFRC522 *mfrc522);
-bool auth(byte b, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key);
+void getUuid(byte array[], byte len, char buffer[]);
+bool waitNewPresentCard(byte tryCount);
+bool auth(byte b);

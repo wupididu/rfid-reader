@@ -7,6 +7,10 @@
 
 #include "utils.h"
 
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+MFRC522::MIFARE_Key key;
+MFRC522::StatusCode status;
+
 void sendMessage(const String &s) {
   Serial.print(s);
   Serial.write('#');
@@ -17,7 +21,7 @@ void sendMessage(JsonVariantConst data) {
   Serial.write('>');
 }
 
-void getUuid(byte array[], unsigned int len, char buffer[]) {
+void getUuid(byte array[], byte len, char buffer[]) {
   for (unsigned int i = 0; i < len; i++)
    {
       byte nib1 = (array[i] >> 4) & 0x0F;
@@ -28,12 +32,12 @@ void getUuid(byte array[], unsigned int len, char buffer[]) {
    buffer[len*2] = '\0';
 }
 
-bool waitNewPresentCard(MFRC522 *mfrc522, unsigned int tryCount) {
+bool waitNewPresentCard(byte tryCount) {
   unsigned int count = 0;
 
   while(count < tryCount) {
-    if (mfrc522->PICC_IsNewCardPresent()) {
-      if (mfrc522->PICC_ReadCardSerial()) {
+    if (mfrc522.PICC_IsNewCardPresent()) {
+      if (mfrc522.PICC_ReadCardSerial()) {
         return true;
       }
     }
@@ -44,20 +48,11 @@ bool waitNewPresentCard(MFRC522 *mfrc522, unsigned int tryCount) {
   return false;
 }
 
-bool waitNewPresentCard(MFRC522 *mfrc522) {
-  if (mfrc522->PICC_IsNewCardPresent()) {
-    if (mfrc522->PICC_ReadCardSerial()) {
-      return true;
-    }
-  }
-  return false;
-}
-
-bool auth(byte b, MFRC522 *mfrc522, MFRC522::MIFARE_Key *key) {
+bool auth(byte b) {
   MFRC522::StatusCode status;
-  status = mfrc522->PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, b, key, &(mfrc522->uid)); //line 834
+  status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, b, &key, &(mfrc522.uid)); //line 834
   if (status != MFRC522::STATUS_OK) {
-    sendMessage(mfrc522->GetStatusCodeName(status));
+    sendMessage(mfrc522.GetStatusCodeName(status));
     return false;
   }
   return true;
