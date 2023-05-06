@@ -62,7 +62,7 @@ void readDataFromCard(byte tryCount) {
 
     doc["data"]["lastName"] = String((char *)buffer);
 
-    // get user type
+    // get middleName
 
     block = 5;
     len = 18;
@@ -71,9 +71,9 @@ void readDataFromCard(byte tryCount) {
         return;
     }
 
-    doc["data"]["userType"] = String((char *)buffer);
+    doc["data"]["middleName"] = String((char *)buffer);
 
-    // get correctUntil
+    // get user type
 
     block = 6;
     len = 18;
@@ -82,7 +82,18 @@ void readDataFromCard(byte tryCount) {
         return;
     }
 
-    doc["data"]["correctUntil"] = String((char *)buffer);
+    doc["data"]["userType"] = String((char *)buffer);
+
+    // get sport type
+
+    block = 8;
+    len = 18;
+
+    if (!readDataFromBlock(block, buffer, &len)) {
+        return;
+    }
+
+    doc["data"]["sportType"] = String((char *)buffer);
 
     // send data
 

@@ -47,18 +47,27 @@ void writeDataToCard(JsonObject data, byte tryCount) {
         return;
     }
 
-    sendMessage("Write user type");
+    sendMessage("Write last name");
     block = 5;
+    len = 16;
+    data["middleName"].as<String>().getBytes(buffer, 18);
+
+    if (!writeDataToBlock(block, buffer, len)) {
+        return;
+    }
+
+    sendMessage("Write user type");
+    block = 6;
     len = 16;
     data["userType"].as<String>().getBytes(buffer, 18);
     if (!writeDataToBlock(block, buffer, len)) {
         return;
     }
 
-    sendMessage("Write correct until");
-    block = 6;
+    sendMessage("Write sportType");
+    block = 8;
     len = 16;
-    data["correctUntil"].as<String>().getBytes(buffer, 18);
+    data["sportType"].as<String>().getBytes(buffer, 18);
     if (!writeDataToBlock(block, buffer, len)) {
         return;
     }
