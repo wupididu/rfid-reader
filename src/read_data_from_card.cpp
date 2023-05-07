@@ -17,35 +17,40 @@ void readDataFromCard(byte tryCount) {
 
     StaticJsonDocument<200> doc;
     doc["cmd"] = CM_READ_DATA;
-   
-    // get uidCard
 
-    char bufferUid[7] = "";
-    getUuid(mfrc522.uid.uidByte, mfrc522.uid.size, bufferUid);
-    doc["data"]["uidCard"] = String((char *)bufferUid);
+    byte block;
+    byte buffer[16];
 
-    //
-
-    byte block, len;
-    byte buffer[18];
-
-    // get uuid
-
-    block = 1;
-    len = 18;
-
-    if (!readDataFromBlock(block, buffer, &len)) {
+    if (!auth(3)) {
         return;
     }
 
-    doc["data"]["uuid"] = String((char *)buffer);
-     
-    // get name
+    // get uuid
+    
+    block = 1;
+    if (!readDataFromBlock(block, buffer)) {
+        return;
+    }
+
+    doc["data"]["leastUuid"] = String((char *)buffer);
 
     block = 2;
-    len = 18;
+    if (!readDataFromBlock(block, buffer)) {
+        return;
+    }
 
-    if (!readDataFromBlock(block, buffer, &len)) {
+    doc["data"]["mostUuid"] = String((char *)buffer);
+     
+
+    if (!auth(7)) {
+        return;
+    }
+
+    // get name
+
+    block = 4;
+
+    if (!readDataFromBlock(block, buffer)) {
         return;
     }
 
@@ -53,10 +58,9 @@ void readDataFromCard(byte tryCount) {
      
     // get last name
 
-    block = 4;
-    len = 18;
+    block = 5;
 
-    if (!readDataFromBlock(block, buffer, &len)) {
+    if (!readDataFromBlock(block, buffer)) {
         return;
     }
 
@@ -64,36 +68,27 @@ void readDataFromCard(byte tryCount) {
 
     // get middleName
 
-    block = 5;
-    len = 18;
+    block = 6;
 
-    if (!readDataFromBlock(block, buffer, &len)) {
+    if (!readDataFromBlock(block, buffer)) {
         return;
     }
 
     doc["data"]["middleName"] = String((char *)buffer);
 
+    if (!auth(11)) {
+        return;
+    }
+
     // get user type
 
-    block = 6;
-    len = 18;
+    block = 8;
 
-    if (!readDataFromBlock(block, buffer, &len)) {
+    if (!readDataFromBlock(block, buffer)) {
         return;
     }
 
     doc["data"]["userType"] = String((char *)buffer);
-
-    // get sport type
-
-    block = 8;
-    len = 18;
-
-    if (!readDataFromBlock(block, buffer, &len)) {
-        return;
-    }
-
-    doc["data"]["sportType"] = String((char *)buffer);
 
     // send data
 

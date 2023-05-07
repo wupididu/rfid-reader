@@ -23,7 +23,7 @@ void setup() {
 
 void loop() {
   if(isConnected && readMode) {
-    readDataFromCard(5);
+    readDataFromCard(1);
   }
   
   if (Serial.available() > 0) {

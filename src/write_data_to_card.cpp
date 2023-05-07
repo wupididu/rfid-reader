@@ -15,60 +15,59 @@ void writeDataToCard(JsonObject data, byte tryCount) {
     return;
     }
 
-    byte block, len;
-    byte buffer[18];
+    byte block;
+
+    if (!auth(3)) {
+        return;
+    }
 
     // write data
 
     sendMessage("Write uuid");
     block = 1;
-    len = 16;
-    data["uuid"].as<String>().getBytes(buffer, 18);
+    if (!writeDataToBlock(block, data["leastUuid"].as<const char*>())) {
+        return;
+    }
 
-    if (!writeDataToBlock(block, buffer, len)) {
+    block = 2;
+
+    if (!writeDataToBlock(block, data["mostUuid"].as<const char*>())) {
+        return;
+    }
+
+    if (!auth(7)) {
         return;
     }
 
     sendMessage("Write name");
-    block = 2;
-    len = 16;
-    data["name"].as<String>().getBytes(buffer, 18);
-
-    if (!writeDataToBlock(block, buffer, len)) {
-        return;
-    }
-
-    sendMessage("Write last name");
     block = 4;
-    len = 16;
-    data["lastName"].as<String>().getBytes(buffer, 18);
 
-    if (!writeDataToBlock(block, buffer, len)) {
+    if (!writeDataToBlock(block, data["name"].as<const char*>())) {
         return;
     }
 
     sendMessage("Write last name");
     block = 5;
-    len = 16;
-    data["middleName"].as<String>().getBytes(buffer, 18);
+    
+    if (!writeDataToBlock(block, data["lastName"].as<const char*>())) {
+        return;
+    }
 
-    if (!writeDataToBlock(block, buffer, len)) {
+    sendMessage("Write middle name");
+    block = 6;
+    
+    if (!writeDataToBlock(block, data["middleName"].as<const char*>())) {
+        return;
+    }
+
+    if (!auth(11)) {
         return;
     }
 
     sendMessage("Write user type");
-    block = 6;
-    len = 16;
-    data["userType"].as<String>().getBytes(buffer, 18);
-    if (!writeDataToBlock(block, buffer, len)) {
-        return;
-    }
-
-    sendMessage("Write sportType");
     block = 8;
-    len = 16;
-    data["sportType"].as<String>().getBytes(buffer, 18);
-    if (!writeDataToBlock(block, buffer, len)) {
+    
+    if (!writeDataToBlock(block, data["userType"].as<const char*>())) {
         return;
     }
 

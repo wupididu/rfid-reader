@@ -61,28 +61,32 @@ bool auth(byte b) {
   return true;
 }
 
-bool readDataFromBlock(byte blockAddr, byte *buffer, byte* bufferSize) {
-  if (!auth(blockAddr)) {
-    return false;
-  }
+bool readDataFromBlock(byte blockAddr, byte *buffer) {
+  byte len = 18;
   
-  status = mfrc522.MIFARE_Read(blockAddr, buffer, bufferSize);
+  status = mfrc522.MIFARE_Read(blockAddr, buffer, &len);
   if (status != MFRC522::STATUS_OK) {
     sendMessage(mfrc522.GetStatusCodeName(status));
     mfrc522.PICC_HaltA();
     mfrc522.PCD_StopCrypto1();
     return false;
   }
+  
   sendMessage("Read data success");
   return true;
 }
 
-bool writeDataToBlock(byte blockAddr, byte *buffer, byte bufferSize) {
-  if (!auth(blockAddr)) {
-    return false;
+bool writeDataToBlock(byte blockAddr, const char *value) {
+  byte buffer[16];
+  for (byte i = 0; i < 16; i++) {
+    if (i < strlen(value)) {
+      buffer[i] = value[i];
+    } else {
+      buffer[i] = 0x00;
+    }
   }
   
-  status = mfrc522.MIFARE_Write(blockAddr, buffer, bufferSize);
+  status = mfrc522.MIFARE_Write(blockAddr, buffer, 16);
   if (status != MFRC522::STATUS_OK) {
     sendMessage(mfrc522.GetStatusCodeName(status));
     mfrc522.PICC_HaltA();

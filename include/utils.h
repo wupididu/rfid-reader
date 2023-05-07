@@ -24,5 +24,5 @@ void sendMessage(JsonVariantConst data);
 void getUuid(byte array[], byte len, char buffer[]);
 bool waitNewPresentCard(byte tryCount);
 bool auth(byte b);
-bool readDataFromBlock(byte blockAddr, byte *buffer, byte* bufferSize);
-bool writeDataToBlock(byte blockAddr, byte *buffer, byte bufferSize);
+bool readDataFromBlock(byte blockAddr, byte *buffer);
+bool writeDataToBlock(byte blockAddr, const char *value);
