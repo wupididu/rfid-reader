@@ -7,13 +7,29 @@
 
 #include "utils.h"
 
+void readData();
+
+void readDataFromCard() {
+    if (!waitNewPresentCard(1)) {
+        return;
+    }
+
+    readData();
+}
+
 void readDataFromCard(byte tryCount) {
     sendMessage("Start read data");
 
     if (!waitNewPresentCard(tryCount)) {
-        sendMessage("Hasn't new card");
+        sendMessage("Cant find card for read data");
         return;
     }
+
+    readData();
+}
+
+void readData() {
+    sendMessage("Find card for read");
 
     StaticJsonDocument<200> doc;
     doc["cmd"] = CM_READ_DATA;

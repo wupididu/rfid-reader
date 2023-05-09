@@ -57,7 +57,6 @@ bool auth(byte b) {
     mfrc522.PCD_StopCrypto1();
     return false;
   }
-  sendMessage("Auth success");
   return true;
 }
 
@@ -72,7 +71,6 @@ bool readDataFromBlock(byte blockAddr, byte *buffer) {
     return false;
   }
   
-  sendMessage("Read data success");
   return true;
 }
 
@@ -93,6 +91,5 @@ bool writeDataToBlock(byte blockAddr, const char *value) {
     mfrc522.PCD_StopCrypto1();
     return false;
   }
-  sendMessage("Read data success");
   return true;
 }

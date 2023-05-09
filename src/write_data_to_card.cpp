@@ -11,9 +11,11 @@ void writeDataToCard(JsonObject data, byte tryCount) {
     sendMessage("Start write data");
 
     if (!waitNewPresentCard(tryCount)) {
-    sendMessage("Hasnt new card");
+    sendMessage("Cant find card for write data");
     return;
     }
+
+    sendMessage("Find card for write data");
 
     byte block;
 
@@ -23,7 +25,6 @@ void writeDataToCard(JsonObject data, byte tryCount) {
 
     // write data
 
-    sendMessage("Write uuid");
     block = 1;
     if (!writeDataToBlock(block, data["leastUuid"].as<const char*>())) {
         return;
@@ -39,21 +40,18 @@ void writeDataToCard(JsonObject data, byte tryCount) {
         return;
     }
 
-    sendMessage("Write name");
     block = 4;
 
     if (!writeDataToBlock(block, data["name"].as<const char*>())) {
         return;
     }
 
-    sendMessage("Write last name");
     block = 5;
     
     if (!writeDataToBlock(block, data["lastName"].as<const char*>())) {
         return;
     }
 
-    sendMessage("Write middle name");
     block = 6;
     
     if (!writeDataToBlock(block, data["middleName"].as<const char*>())) {
@@ -64,7 +62,6 @@ void writeDataToCard(JsonObject data, byte tryCount) {
         return;
     }
 
-    sendMessage("Write user type");
     block = 8;
     
     if (!writeDataToBlock(block, data["userType"].as<const char*>())) {

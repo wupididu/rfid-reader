@@ -4,5 +4,6 @@
 #include <ArduinoJson.h>
 
 bool handShake(JsonObject data);
+void readDataFromCard();
 void readDataFromCard(byte tryCount);
 void writeDataToCard(JsonObject data, byte tryCount);
